@@ -1,0 +1,39 @@
+CREATE TYPE session_status AS ENUM ("VERIFIED", "VERIFYING_TWITTER", "ADDED_TWITTER", "AWAITING_TWITTER", "START", "RESTART");
+CREATE TABLE IF NOT EXISTS sessions (
+    id SERIAL PRIMARY KEY,
+    user_id BIGINT NOT NULL UNIQUE,
+    twitter_username VARCHAR(255) DEFAULT NULL UNIQUE,
+    twitter_id BIGINT DEFAULT NULL UNIQUE,
+    twitter_username_verified BOOLEAN DEFAULT FALSE,
+    verification_code VARCHAR(10) DEFAULT NULL,
+    status session_status NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TYPE campaign_status AS ENUM ('ACTIVE', 'COMPLETED', 'CANCELLED', 'EXPIRED');
+CREATE TABLE IF NOT EXISTS campaigns (
+    id SERIAL PRIMARY KEY,
+    owner_id BIGINT NOT NULL REFERENCES sessions(user_id) ON DELETE CASCADE,
+    tweet_url VARCHAR(255) NOT NULL,
+    tweet_id BIGINT NOT NULL,
+    title VARCHAR(255) NOT NULL,
+    description TEXT NOT NULL,
+    points_per_engagement INT NOT NULL,
+    max_participants INT,
+    status campaign_status NOT NULL DEFAULT 'ACTIVE',
+    expires_at TIMESTAMP NOT NULL DEFAULT (CURRENT_TIMESTAMP + INTERVAL '7 days'),
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS engagements (
+    id SERIAL PRIMARY KEY,
+    campaign_id INT NOT NULL REFERENCES campaigns(id) ON DELETE CASCADE,
+    user_id BIGINT NOT NULL REFERENCES sessions(user_id) ON DELETE CASCADE,
+    liked BOOLEAN DEFAULT FALSE,
+    retweeted BOOLEAN DEFAULT FALSE,
+    followed BOOLEAN DEFAULT FALSE,
+    quoted BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
