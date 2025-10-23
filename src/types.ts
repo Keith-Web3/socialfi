@@ -15,6 +15,14 @@ export interface UserSession {
     | null;
   created_at?: Date;
   updated_at?: Date;
+  last_verified_action:
+    | "CREATE_CAMPAIGN"
+    | "ADD_CAMPAIGN_URL"
+    | "ADD_CAMPAIGN_TITLE"
+    | "ADD_CAMPAIGN_DESCRIPTION"
+    | "SET_POINTS_PER_ENGAGEMENT"
+    | "SET_MAX_PARTICIPANTS"
+    | null;
 }
 
 export interface Tweet {
@@ -151,7 +159,7 @@ export interface Campaign {
   description: string;
   points_per_engagement: number;
   max_participants?: number | null;
-  status: "ACTIVE" | "COMPLETED" | "CANCELLED" | "EXPIRED";
+  status: "ACTIVE" | "COMPLETED" | "CANCELLED" | "EXPIRED" | "DRAFT";
   expires_at: Date;
   created_at?: Date;
   updated_at?: Date;

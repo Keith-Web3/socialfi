@@ -1,4 +1,6 @@
-CREATE TYPE session_status AS ENUM ("VERIFIED", "VERIFYING_TWITTER", "ADDED_TWITTER", "AWAITING_TWITTER", "START", "RESTART");
+CREATE TYPE session_status AS ENUM ('VERIFIED', 'VERIFYING_TWITTER', 'ADDED_TWITTER', 'AWAITING_TWITTER', 'START', 'RESTART');
+CREATE TYPE action AS ENUM ('CREATE_CAMPAIGN', 'ADD_CAMPAIGN_URL', 'ADD_CAMPAIGN_TITLE', 'ADD_CAMPAIGN_DESCRIPTION', 'SET_POINTS_PER_ENGAGEMENT', 'SET_MAX_PARTICIPANTS', 'PUBLISH_CAMPAIGN');
+
 CREATE TABLE IF NOT EXISTS sessions (
     id SERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL UNIQUE,
@@ -7,21 +9,23 @@ CREATE TABLE IF NOT EXISTS sessions (
     twitter_username_verified BOOLEAN DEFAULT FALSE,
     verification_code VARCHAR(10) DEFAULT NULL,
     status session_status NOT NULL,
+    last_verified_action action DEFAULT NULL,
+    points INT DEFAULT 0,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TYPE campaign_status AS ENUM ('ACTIVE', 'COMPLETED', 'CANCELLED', 'EXPIRED');
+CREATE TYPE campaign_status AS ENUM ('ACTIVE', 'COMPLETED', 'CANCELLED', 'EXPIRED', 'DRAFT');
 CREATE TABLE IF NOT EXISTS campaigns (
     id SERIAL PRIMARY KEY,
     owner_id BIGINT NOT NULL REFERENCES sessions(user_id) ON DELETE CASCADE,
     tweet_url VARCHAR(255) NOT NULL,
     tweet_id BIGINT NOT NULL,
-    title VARCHAR(255) NOT NULL,
-    description TEXT NOT NULL,
-    points_per_engagement INT NOT NULL,
+    title VARCHAR(255) NOT NULL DEFAULT 'Untitled Campaign',
+    description TEXT NOT NULL DEFAULT 'No description provided.',
+    points_per_engagement INT NOT NULL DEFAULT 4,
     max_participants INT,
-    status campaign_status NOT NULL DEFAULT 'ACTIVE',
+    status campaign_status NOT NULL DEFAULT 'DRAFT',
     expires_at TIMESTAMP NOT NULL DEFAULT (CURRENT_TIMESTAMP + INTERVAL '7 days'),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP

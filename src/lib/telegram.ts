@@ -1,5 +1,10 @@
-import { Telegram } from "puregram";
+import { Telegram } from 'puregram'
+import dotenv from 'dotenv'
 
-const telegram = Telegram.fromToken(process.env["BOT_TOKEN"]!);
+dotenv.config()
 
-export default telegram;
+const telegram = Telegram.fromToken(process.env['BOT_TOKEN']!, {
+  apiTimeout: 30_000,
+})
+
+export default telegram
