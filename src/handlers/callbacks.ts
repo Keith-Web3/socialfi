@@ -52,7 +52,7 @@ export const verifyTwitter = async function (
 
     await telegram.api.sendMessage({
       chat_id: context.from!.id,
-      text: `🧩 To verify your Twitter account, follow these steps:\n\n1. Post a tweet from @${user.twitter_username} containing this code: #Engage${user.verification_code}\n2. After posting, return here and tap "✅ Complete Verification"\n\nIf you made a mistake or want to use a different account, you can change your Twitter username.`,
+      text: `🧩 To verify your Twitter account, follow these steps:\n\n1. Post a tweet from @${user.twitter_username} containing this code: #Engage${code}\n2. After posting, return here and tap "✅ Complete Verification"\n\nIf you made a mistake or want to use a different account, you can change your Twitter username.`,
       reply_markup: InlineKeyboard.keyboard([
         [confirm_verification],
         [change_twitter],
