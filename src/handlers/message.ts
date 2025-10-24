@@ -47,8 +47,8 @@ export const handleStart = async function (
     case 'START': {
       await context.reply(`👋 Welcome back to the *Kaito Engagement Bot!*`, {
         reply_markup: InlineKeyboard.keyboard([
-          [connect_twitter, view_active_campaigns],
-          [how_it_works],
+          [connect_twitter],
+          [view_active_campaigns],
         ]),
         parse_mode: 'markdown',
       })
